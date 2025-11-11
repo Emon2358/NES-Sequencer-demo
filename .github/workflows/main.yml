@@ -1,0 +1,37 @@
+name: Build NES Sequencer (FamiStudio + cc65)
+
+on:
+  push:
+    paths:
+      - 'input/**'
+      - '.github/workflows/**'
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Setup dependencies and FamiStudio
+        run: |
+          chmod +x scripts/ci-setup.sh
+          scripts/ci-setup.sh
+
+      - name: Run build (convert MIDI -> ROM/ASM/WAV etc.)
+        env:
+          GITHUB_WORKSPACE: ${{ github.workspace }}
+        run: |
+          chmod +x scripts/build-all.sh
+          scripts/build-all.sh
+
+      - name: Upload built ROMs and outputs
+        uses: actions/upload-artifact@v4
+        with:
+          name: nes-sequencer-builds
+          path: |
+            outputs/*.nes
+            outputs/*.nsf
+            outputs/*.wav
+            outputs/*.s
