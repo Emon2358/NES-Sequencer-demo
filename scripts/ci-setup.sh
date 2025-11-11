@@ -18,29 +18,4 @@ curl -L "$ASSET_URL" -o /tmp/famistudio_asset.zip
 
 mkdir -p tools/famistudio
 # try unzip / tar
-if file /tmp/famistudio_asset.zip | grep -i zip >/dev/null 2>&1; then
-  unzip -q /tmp/famistudio_asset.zip -d tools/famistudio
-else
-  # fallback: try tar
-  tar -xf /tmp/famistudio_asset.zip -C tools/famistudio || true
-fi
-
-# Locate executable (FamiStudio binary name can vary)
-# prefer a file named 'FamiStudio' or '*.AppImage'
-FS_BIN=$(find tools/famistudio -maxdepth 2 -type f -executable -name 'FamiStudio*' | head -n1 || true)
-if [ -z "$FS_BIN" ]; then
-  FS_BIN=$(find tools/famistudio -maxdepth 2 -type f -name '*.AppImage' | head -n1 || true)
-fi
-
-if [ -z "$FS_BIN" ]; then
-  echo "Could not find FamiStudio binary in downloaded archive. Listing contents:"
-  ls -R tools/famistudio
-  exit 1
-fi
-
-# make wrapper path
-mkdir -p tools/bin
-cp "$FS_BIN" tools/bin/FamiStudio
-chmod +x tools/bin/FamiStudio
-echo "FamiStudio installed to tools/bin/FamiStudio"
-export PATH="$PWD/tools/bin:$PATH"
+if file /tmp/
